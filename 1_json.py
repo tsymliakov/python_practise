@@ -28,6 +28,10 @@ def get_unique_users_count(response):
 
 
 def get_tasks_status(response):
+    """
+    Задание 2.6.3. Требуется посчитать для каждого пользователя суммарное число
+    задач и количество выполненных задач
+    """
     data = json.loads(response.text)
     users = dict()
 
