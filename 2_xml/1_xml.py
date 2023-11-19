@@ -31,9 +31,11 @@ def recursive_get_count(root: ETree.ElementTree, attribute):
     """
     count = 0
 
+    if attribute in root.attrib.keys():
+        count += 1
     for element in root:
-        if attribute in element.attrib:
-            count += 1
         count += recursive_get_count(element, attribute)
 
     return count
+
+print(recursive_get_count(root, "name"))
