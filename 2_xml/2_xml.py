@@ -19,7 +19,7 @@ def get_parent(node: ETree.Element, xml_tree: ETree.ElementTree) -> ETree.Elemen
 
 def delete_nodes_via_tag(tag: str, xml_tree: ETree.ElementTree) -> None:
     """
-    4.7.1 требуется удалить все узлы, совпадающие по тегу, вместе с их
+    4.6.1 требуется удалить все узлы, совпадающие по тегу, вместе с их
     поддеревьями.
 
     Хоть функций и работает, но возникает небольшая проблема с удалением
