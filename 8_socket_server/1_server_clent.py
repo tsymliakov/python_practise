@@ -8,7 +8,7 @@ SERVER = "localhost", 12345
 
 class Server:
     def __init__(self, host, port):
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # SOCK_STREAM - TCP сокет
         self.sock.bind(("localhost", 12345))
         self.clients = {}
         print("Start Server")
@@ -21,11 +21,22 @@ class Server:
             if addres not in self.clients:
                 self.register(addres, data)
 
-            if self.change_alias(data, addres):
-                continue
+            self.change_alias(data, addres)
+
+            if self.disconnect(data, addres):
+                alias = self.clients[addres]
+                self.clients.pop(addres)
+                self.send_to_client(addres, "You have been disconected.".encode("utf-8"))
+                self.send_all_clients_besides(addres, f"User {alias} has been disconected.".encode('utf-8'))
+
 
             print(f"{addres} | {self.clients[addres]} | {data}")
             self.send_all_clients_besides(addres, data)
+
+    def disconnect(self, data: bytes, addres):
+        if not data.decode('utf-8').startswith('/CLOSE'):
+            self.
+
 
     def register(self, addres, data: bytes):
         self.clients[addres] = data.decode('utf-8')
@@ -69,7 +80,7 @@ class Client:
         self.connect()
 
     def connect(self):
-        self.sor = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.sor = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # SOCK_STREAM - TCP сокет
         self.sor.bind(("", 0))
         self.sor.sendto((self.alias).encode("utf-8"), self.server)
 
@@ -78,6 +89,9 @@ class Client:
 
     def send(self, msg: str):
         self.sor.sendto(msg.encode("utf-8"), self.server)
+
+    def disconnect(self):
+        self.sor.sendto("/CLOSE".encode("utf-8"), self.server)
 
     def change_alias(self, new_alias: str):
         self.alias = new_alias
